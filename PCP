@@ -1,0 +1,44 @@
+import threading
+import time
+import random
+
+buffer = []  # shared list (acts as buffer)
+buffer_size = int(input("Enter buffer size: "))
+n = int(input("Enter number of items to produce/consume: "))
+
+# Producer function
+def producer():
+    for i in range(n):
+        if len(buffer) < buffer_size:
+            item = random.randint(1, 100)
+            buffer.append(item)
+            print(f"Produced: {item}")
+        else:
+            print("Buffer full, producer waiting...")
+        time.sleep(random.uniform(0.5, 1.0))
+    print("Producer done.\n")
+
+# Consumer function
+def consumer():
+    for i in range(n):
+        if len(buffer) > 0:
+            item = buffer.pop(0)
+            print(f"Consumed: {item}")
+        else:
+            print("Buffer empty, consumer waiting...")
+        time.sleep(random.uniform(0.5, 1.5))
+    print("Consumer done.\n")
+
+# Create threads
+t1 = threading.Thread(target=producer)
+t2 = threading.Thread(target=consumer)
+
+# Start threads
+t1.start()
+t2.start()
+
+# Wait for threads to finish
+t1.join()
+t2.join()
+
+print("All tasks completed.")
